@@ -1,7 +1,8 @@
 "use client"
 
-import Link from "next/link"
-import { useEffect, useState } from "react"
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import Lenis from "@studio-freight/lenis";
 import {
   ArrowRight,
   BarChart3,
@@ -14,32 +15,62 @@ import {
   Shield,
   Star,
   Zap,
-} from "lucide-react"
+} from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 export default function LandingPage() {
-  const [scrollY, setScrollY] = useState(0)
-  const [isVisible, setIsVisible] = useState(false)
+  const [scrollY, setScrollY] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrollY(window.scrollY)
-    }
+      setScrollY(window.scrollY);
+    };
 
+    const lenis = new Lenis({
+      duration: 1.0,
+      easing: (t) => 1 - Math.pow(1 - t, 3),
+      gestureOrientation: "vertical",
+      touchMultiplier: 2,
+      infinite: false,
+    });
+
+    function raf(time: number): void {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+
+    const handleLinkClick = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (target?.tagName === "A" && (target as HTMLAnchorElement).getAttribute("href")?.startsWith("#")) {
+        event.preventDefault();
+        const sectionId: string | null = (target as HTMLAnchorElement).getAttribute("href");
+        const section: HTMLElement | null = document.querySelector(sectionId as string);
+        if (section) {
+          lenis.scrollTo(section, { offset: -10 });
+        }
+      }
+    };
+
+    document.addEventListener("click", handleLinkClick);
+    window.addEventListener("scroll", handleScroll);
+    
     const timer = setTimeout(() => {
-      setIsVisible(true)
-    }, 500)
+      setIsVisible(true);
+    }, 500);
 
-    window.addEventListener("scroll", handleScroll)
     return () => {
-      window.removeEventListener("scroll", handleScroll)
-      clearTimeout(timer)
-    }
-  }, [])
+      window.removeEventListener("scroll", handleScroll);
+      document.removeEventListener("click", handleLinkClick);
+      clearTimeout(timer);
+    };
+  }, []);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -66,17 +97,11 @@ export default function LandingPage() {
             </Link>
           </nav>
           <div className="flex items-center gap-4">
-            <Link href="/login">
-              <Button variant="outline" className="transition-all hover:border-primary">
-                Log In
-              </Button>
-            </Link>
-            <Link href="/signup">
-              <Button className="shadow-lg shadow-primary/20 transition-all hover:shadow-primary/40">Sign Up</Button>
-            </Link>
+          <ConnectButton />
           </div>
         </div>
       </header>
+
       <main className="flex-1">
         {/* Hero Section */}
         <section className="relative overflow-hidden py-20 md:py-32">
@@ -433,8 +458,8 @@ export default function LandingPage() {
                   </Button>
                 </Link>
                 <Link href="https://twitter.com/cryptotrendai" target="_blank" rel="noopener noreferrer">
-                  <Button size="lg" variant="outline" className="w-full sm:w-auto border-white/20 hover:bg-white/10">
-                    Follow Us <ExternalLink className="ml-2 h-4 w-4" />
+                  <Button size="lg" variant="secondary" className="w-full sm:w-auto group shadow-lg shadow-black/20">
+                    Follow Us <ExternalLink className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </Button>
                 </Link>
               </div>

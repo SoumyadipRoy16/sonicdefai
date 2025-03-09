@@ -136,9 +136,9 @@ export default function LandingPage() {
               Stats
             </Link>
           </nav>
-          <button className="flex items-center gap-4">
+          <div className="flex items-center gap-4">
             <ConnectButton />
-          </button>
+          </div>
         </div>
       </header>
 

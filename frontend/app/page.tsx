@@ -15,10 +15,19 @@ import {
   Shield,
   Star,
   Zap,
+  Twitter,
+  Github,
+  Facebook,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
@@ -48,10 +57,17 @@ export default function LandingPage() {
 
     const handleLinkClick = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
-      if (target?.tagName === "A" && (target as HTMLAnchorElement).getAttribute("href")?.startsWith("#")) {
+      if (
+        target?.tagName === "A" &&
+        (target as HTMLAnchorElement).getAttribute("href")?.startsWith("#")
+      ) {
         event.preventDefault();
-        const sectionId: string | null = (target as HTMLAnchorElement).getAttribute("href");
-        const section: HTMLElement | null = document.querySelector(sectionId as string);
+        const sectionId: string | null = (
+          target as HTMLAnchorElement
+        ).getAttribute("href");
+        const section: HTMLElement | null = document.querySelector(
+          sectionId as string
+        );
         if (section) {
           lenis.scrollTo(section, { offset: -10 });
         }
@@ -60,7 +76,7 @@ export default function LandingPage() {
 
     document.addEventListener("click", handleLinkClick);
     window.addEventListener("scroll", handleScroll);
-    
+
     const timer = setTimeout(() => {
       setIsVisible(true);
     }, 500);
@@ -71,6 +87,12 @@ export default function LandingPage() {
       clearTimeout(timer);
     };
   }, []);
+
+  const socialLinks = [
+    { name: "twitter", icon: <Twitter /> },
+    { name: "facebook", icon: <Facebook /> },
+    { name: "github", icon: <Github /> },
+  ];
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -84,7 +106,9 @@ export default function LandingPage() {
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-2">
             <Zap className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold">CryptoTrendAI</span>
+            <Link href="/" className="text-xl font-bold">
+              CryptoTrendAI
+            </Link>
           </div>
           <nav className="hidden md:flex items-center gap-6">
             <Link
@@ -112,9 +136,9 @@ export default function LandingPage() {
               Stats
             </Link>
           </nav>
-          <div className="flex items-center gap-4">
-          <ConnectButton />
-          </div>
+          <button className="flex items-center gap-4">
+            <ConnectButton />
+          </button>
         </div>
       </header>
 
@@ -151,7 +175,7 @@ export default function LandingPage() {
                   words with memecoin potential, and notifies you in real-time.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 mt-2">
-                  <Link href="/signup">
+                  <Link href="/dashboard">
                     <Button
                       size="lg"
                       className="w-full sm:w-auto group shadow-lg shadow-primary/20 transition-all hover:shadow-primary/40"
@@ -411,7 +435,6 @@ export default function LandingPage() {
               </p>
             </div>
             <div className="mx-auto grid max-w-5xl gap-8 md:grid-cols-3 mt-12 relative">
-              <div className="hidden md:block absolute top-24 left-[calc(16.67%-8px)] right-[calc(16.67%-8px)] h-1 bg-primary/20"></div>
               {[
                 {
                   step: 1,
@@ -547,19 +570,18 @@ export default function LandingPage() {
                 platform to stay ahead of the curve.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 mt-4">
-                <Link href="/signup">
+                <Link
+                  href="https://twitter.com/cryptotrendai"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <Button
                     size="lg"
                     variant="secondary"
                     className="w-full sm:w-auto group shadow-lg shadow-black/20"
                   >
-                    Sign Up Now{" "}
-                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </Button>
-                </Link>
-                <Link href="https://twitter.com/cryptotrendai" target="_blank" rel="noopener noreferrer">
-                  <Button size="lg" variant="secondary" className="w-full sm:w-auto group shadow-lg shadow-black/20">
-                    Follow Us <ExternalLink className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    Follow Us{" "}
+                    <ExternalLink className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </Button>
                 </Link>
               </div>
@@ -579,25 +601,15 @@ export default function LandingPage() {
               AI-powered crypto celebrity tweet analysis.
             </p>
             <div className="flex gap-4">
-              {["twitter", "discord", "telegram", "github"].map((social) => (
+              {socialLinks.map(({ name, icon }) => (
                 <Link
-                  key={social}
-                  href={`#${social}`}
+                  key={name}
+                  href={`#${name}`}
                   className="text-muted-foreground hover:text-primary transition-colors"
                 >
                   <div className="h-8 w-8 rounded-full bg-background flex items-center justify-center border">
-                    <span className="sr-only">{social}</span>
-                    <svg
-                      className="h-4 w-4"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-                    </svg>
+                    <span className="sr-only">{icon}</span>
+                    <div className="h-6 w-6 ">{icon}</div>
                   </div>
                 </Link>
               ))}

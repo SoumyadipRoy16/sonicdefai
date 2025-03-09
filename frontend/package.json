@@ -36,14 +36,19 @@
     "@rainbow-me/rainbowkit": "^2.2.4",
     "@react-three/fiber": "^9.0.4",
     "@studio-freight/lenis": "^1.0.42",
+<<<<<<< HEAD:frontend/package.json
     "@tanstack/react-query": "^5.67.2",
+=======
+>>>>>>> b6506f3e80291a8ee66695cc4e9a0ef7eacc7adb:package.json
     "@types/three": "^0.174.0",
+    "@wagmi/core": "^2.16.5",
     "autoprefixer": "^10.4.20",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.4",
     "embla-carousel-react": "^8.5.2",
     "framer-motion": "^12.4.7",
+    "gsap": "^3.12.7",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.477.0",
     "mini-svg-data-uri": "^1.4.4",
@@ -73,6 +78,8 @@
     "eslint-config-next": "15.2.0",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.15",
-    "typescript": "^5.1.6"
+    "typescript": "^5.1.6",
+    "viem": "^2.23.8",
+    "wagmi": "^2.14.12"
   }
 }

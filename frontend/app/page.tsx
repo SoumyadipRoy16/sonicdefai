@@ -18,13 +18,7 @@ import {
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
@@ -54,17 +48,10 @@ export default function LandingPage() {
 
     const handleLinkClick = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
-      if (
-        target?.tagName === "A" &&
-        (target as HTMLAnchorElement).getAttribute("href")?.startsWith("#")
-      ) {
+      if (target?.tagName === "A" && (target as HTMLAnchorElement).getAttribute("href")?.startsWith("#")) {
         event.preventDefault();
-        const sectionId: string | null = (
-          target as HTMLAnchorElement
-        ).getAttribute("href");
-        const section: HTMLElement | null = document.querySelector(
-          sectionId as string
-        );
+        const sectionId: string | null = (target as HTMLAnchorElement).getAttribute("href");
+        const section: HTMLElement | null = document.querySelector(sectionId as string);
         if (section) {
           lenis.scrollTo(section, { offset: -10 });
         }
@@ -73,7 +60,7 @@ export default function LandingPage() {
 
     document.addEventListener("click", handleLinkClick);
     window.addEventListener("scroll", handleScroll);
-
+    
     const timer = setTimeout(() => {
       setIsVisible(true);
     }, 500);
@@ -126,7 +113,7 @@ export default function LandingPage() {
             </Link>
           </nav>
           <div className="flex items-center gap-4">
-            <ConnectButton />
+          <ConnectButton />
           </div>
         </div>
       </header>
@@ -570,18 +557,9 @@ export default function LandingPage() {
                     <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </Button>
                 </Link>
-                <Link
-                  href="https://twitter.com/cryptotrendai"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Button
-                    size="lg"
-                    variant="secondary"
-                    className="w-full sm:w-auto group shadow-lg shadow-black/20"
-                  >
-                    Follow Us{" "}
-                    <ExternalLink className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                <Link href="https://twitter.com/cryptotrendai" target="_blank" rel="noopener noreferrer">
+                  <Button size="lg" variant="secondary" className="w-full sm:w-auto group shadow-lg shadow-black/20">
+                    Follow Us <ExternalLink className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </Button>
                 </Link>
               </div>

@@ -32,9 +32,17 @@ export function Providers({ children, initialState }: Props) {
           })}
           initialChain={57054}
         >
+<<<<<<< HEAD:frontend/app/providers.tsx
+=======
+        
+>>>>>>> b6506f3e80291a8ee66695cc4e9a0ef7eacc7adb:app/providers.tsx
           {children}
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );
+<<<<<<< HEAD:frontend/app/providers.tsx
 }
+=======
+}
+>>>>>>> b6506f3e80291a8ee66695cc4e9a0ef7eacc7adb:app/providers.tsx

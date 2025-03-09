@@ -32,7 +32,6 @@ export function Providers({ children, initialState }: Props) {
           })}
           initialChain={57054}
         >
-        
           {children}
         </RainbowKitProvider>
       </QueryClientProvider>

@@ -1,24 +1,45 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { useState } from "react"
-import { Bell, ChevronDown, Filter, Search, Settings, Star, Zap } from "lucide-react"
+import Link from "next/link";
+import { useState } from "react";
+import {
+  Bell,
+  ChevronDown,
+  Filter,
+  Search,
+  Settings,
+  Star,
+  Zap,
+} from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { useWishlist } from "@/components/wishlist-provider"
-import { useToast } from "@/hooks/use-toast"
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useWishlist } from "@/components/wishlist-provider";
+import { useToast } from "@/hooks/use-toast";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 export default function DashboardPage() {
-  const { addItem, isInWishlist } = useWishlist()
-  const { toast } = useToast()
-  const [searchQuery, setSearchQuery] = useState("")
-  const [timeFilter, setTimeFilter] = useState("Last 7 Days")
+  const { addItem, isInWishlist } = useWishlist();
+  const { toast } = useToast();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [timeFilter, setTimeFilter] = useState("Last 7 Days");
 
   // Mock data for trending keywords
   const trendingKeywords = [
@@ -28,15 +49,17 @@ export default function DashboardPage() {
     { word: "SHIB", score: 89, mentions: 654, celebrity: "Vitalik Buterin" },
     { word: "MOON", score: 87, mentions: 543, celebrity: "SBF" },
     { word: "ROCKET", score: 85, mentions: 432, celebrity: "Elon Musk" },
-  ]
+  ];
 
-  const highPotentialKeywords = trendingKeywords.filter((item) => item.score > 90)
+  const highPotentialKeywords = trendingKeywords.filter(
+    (item) => item.score > 90
+  );
 
   const filteredKeywords = trendingKeywords.filter(
     (item) =>
       item.word.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.celebrity.toLowerCase().includes(searchQuery.toLowerCase()),
-  )
+      item.celebrity.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const handleAddToWishlist = (item: any) => {
     if (isInWishlist(item.word)) {
@@ -44,8 +67,8 @@ export default function DashboardPage() {
         title: "Already in wishlist",
         description: `"${item.word}" is already in your wishlist.`,
         variant: "destructive",
-      })
-      return
+      });
+      return;
     }
 
     addItem({
@@ -53,8 +76,8 @@ export default function DashboardPage() {
       score: item.score,
       mentions: item.mentions,
       celebrity: item.celebrity,
-    })
-  }
+    });
+  };
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -62,7 +85,9 @@ export default function DashboardPage() {
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-2">
             <Zap className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold">CryptoTrendAI</span>
+            <Link href="/" className="text-xl font-bold">
+              CryptoTrendAI
+            </Link>
           </div>
           <div className="flex items-center gap-4">
             <div className="relative w-full max-w-sm">
@@ -75,27 +100,15 @@ export default function DashboardPage() {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            <Button variant="outline" size="icon" className="relative">
+            <Button variant="outline" size="icon" className="relative ml-2">
               <Bell className="h-4 w-4" />
               <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground">
                 3
               </span>
             </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src="/placeholder.svg?height=32&width=32" alt="User" />
-                    <AvatarFallback>U</AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuItem>Settings</DropdownMenuItem>
-                <DropdownMenuItem>Logout</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <div className="flex items-center gap-4">
+              <ConnectButton />
+            </div>
           </div>
         </div>
       </header>
@@ -106,7 +119,9 @@ export default function DashboardPage() {
           </div>
           <nav className="flex-1 overflow-auto py-4">
             <div className="px-4 py-2">
-              <h3 className="mb-2 text-sm font-medium text-muted-foreground">Menu</h3>
+              <h3 className="mb-2 text-sm font-medium text-muted-foreground">
+                Menu
+              </h3>
               <div className="space-y-1">
                 <Button variant="secondary" className="w-full justify-start">
                   <Zap className="mr-2 h-4 w-4" />
@@ -129,13 +144,29 @@ export default function DashboardPage() {
               </div>
             </div>
             <div className="px-4 py-2">
-              <h3 className="mb-2 text-sm font-medium text-muted-foreground">Top Celebrities</h3>
+              <h3 className="mb-2 text-sm font-medium text-muted-foreground">
+                Top Celebrities
+              </h3>
               <div className="space-y-2">
-                {["Elon Musk", "Vitalik Buterin", "CZ Binance", "SBF", "Justin Sun"].map((name, i) => (
-                  <Link href={`/celebrity/${name.toLowerCase().replace(/\s+/g, "-")}`} key={i}>
+                {[
+                  "Elon Musk",
+                  "Vitalik Buterin",
+                  "CZ Binance",
+                  "SBF",
+                  "Justin Sun",
+                ].map((name, i) => (
+                  <Link
+                    href={`/celebrity/${name
+                      .toLowerCase()
+                      .replace(/\s+/g, "-")}`}
+                    key={i}
+                  >
                     <div className="flex items-center gap-2 hover:text-primary transition-colors cursor-pointer">
                       <Avatar className="h-6 w-6">
-                        <AvatarImage src={`/placeholder.svg?height=24&width=24&text=${name[0]}`} alt={name} />
+                        <AvatarImage
+                          src={`/placeholder.svg?height=24&width=24&text=${name[0]}`}
+                          alt={name}
+                        />
                         <AvatarFallback>{name[0]}</AvatarFallback>
                       </Avatar>
                       <span className="text-sm">{name}</span>
@@ -163,10 +194,22 @@ export default function DashboardPage() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => setTimeFilter("Today")}>Today</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setTimeFilter("Last 7 Days")}>Last 7 Days</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setTimeFilter("Last 30 Days")}>Last 30 Days</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setTimeFilter("All Time")}>All Time</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setTimeFilter("Today")}>
+                      Today
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setTimeFilter("Last 7 Days")}
+                    >
+                      Last 7 Days
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setTimeFilter("Last 30 Days")}
+                    >
+                      Last 30 Days
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setTimeFilter("All Time")}>
+                      All Time
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
@@ -181,17 +224,27 @@ export default function DashboardPage() {
               <TabsContent value="all" className="space-y-6">
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                   {filteredKeywords.map((item, i) => (
-                    <Card key={i} className="hover:shadow-md transition-all duration-300 hover:border-primary/20">
+                    <Card
+                      key={i}
+                      className="hover:shadow-md transition-all duration-300 hover:border-primary/20"
+                    >
                       <CardHeader className="pb-2">
                         <div className="flex items-center justify-between">
-                          <CardTitle className="text-2xl font-bold">{item.word}</CardTitle>
-                          <Badge variant={item.score > 90 ? "default" : "secondary"} className="px-2 py-0">
+                          <CardTitle className="text-2xl font-bold">
+                            {item.word}
+                          </CardTitle>
+                          <Badge
+                            variant={item.score > 90 ? "default" : "secondary"}
+                            className="px-2 py-0"
+                          >
                             {item.score}%
                           </Badge>
                         </div>
                         <CardDescription>
                           <Link
-                            href={`/celebrity/${item.celebrity.toLowerCase().replace(/\s+/g, "-")}`}
+                            href={`/celebrity/${item.celebrity
+                              .toLowerCase()
+                              .replace(/\s+/g, "-")}`}
                             className="hover:text-primary transition-colors"
                           >
                             Mentioned by {item.celebrity}
@@ -204,18 +257,29 @@ export default function DashboardPage() {
                           <span>{timeFilter}</span>
                         </div>
                         <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-muted">
-                          <div className="h-full bg-primary" style={{ width: `${item.score}%` }}></div>
+                          <div
+                            className="h-full bg-primary"
+                            style={{ width: `${item.score}%` }}
+                          ></div>
                         </div>
                       </CardContent>
                       <CardFooter>
                         <Button
-                          variant={isInWishlist(item.word) ? "secondary" : "outline"}
+                          variant={
+                            isInWishlist(item.word) ? "secondary" : "outline"
+                          }
                           size="sm"
                           className="w-full"
                           onClick={() => handleAddToWishlist(item)}
                         >
-                          <Star className={`mr-2 h-4 w-4 ${isInWishlist(item.word) ? "fill-primary" : ""}`} />
-                          {isInWishlist(item.word) ? "Added to Wishlist" : "Add to Wishlist"}
+                          <Star
+                            className={`mr-2 h-4 w-4 ${
+                              isInWishlist(item.word) ? "fill-primary" : ""
+                            }`}
+                          />
+                          {isInWishlist(item.word)
+                            ? "Added to Wishlist"
+                            : "Add to Wishlist"}
                         </Button>
                       </CardFooter>
                     </Card>
@@ -225,17 +289,24 @@ export default function DashboardPage() {
               <TabsContent value="high-potential" className="space-y-6">
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                   {highPotentialKeywords.map((item, i) => (
-                    <Card key={i} className="hover:shadow-md transition-all duration-300 hover:border-primary/20">
+                    <Card
+                      key={i}
+                      className="hover:shadow-md transition-all duration-300 hover:border-primary/20"
+                    >
                       <CardHeader className="pb-2">
                         <div className="flex items-center justify-between">
-                          <CardTitle className="text-2xl font-bold">{item.word}</CardTitle>
+                          <CardTitle className="text-2xl font-bold">
+                            {item.word}
+                          </CardTitle>
                           <Badge variant="default" className="px-2 py-0">
                             {item.score}%
                           </Badge>
                         </div>
                         <CardDescription>
                           <Link
-                            href={`/celebrity/${item.celebrity.toLowerCase().replace(/\s+/g, "-")}`}
+                            href={`/celebrity/${item.celebrity
+                              .toLowerCase()
+                              .replace(/\s+/g, "-")}`}
                             className="hover:text-primary transition-colors"
                           >
                             Mentioned by {item.celebrity}
@@ -248,18 +319,29 @@ export default function DashboardPage() {
                           <span>{timeFilter}</span>
                         </div>
                         <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-muted">
-                          <div className="h-full bg-primary" style={{ width: `${item.score}%` }}></div>
+                          <div
+                            className="h-full bg-primary"
+                            style={{ width: `${item.score}%` }}
+                          ></div>
                         </div>
                       </CardContent>
                       <CardFooter>
                         <Button
-                          variant={isInWishlist(item.word) ? "secondary" : "outline"}
+                          variant={
+                            isInWishlist(item.word) ? "secondary" : "outline"
+                          }
                           size="sm"
                           className="w-full"
                           onClick={() => handleAddToWishlist(item)}
                         >
-                          <Star className={`mr-2 h-4 w-4 ${isInWishlist(item.word) ? "fill-primary" : ""}`} />
-                          {isInWishlist(item.word) ? "Added to Wishlist" : "Add to Wishlist"}
+                          <Star
+                            className={`mr-2 h-4 w-4 ${
+                              isInWishlist(item.word) ? "fill-primary" : ""
+                            }`}
+                          />
+                          {isInWishlist(item.word)
+                            ? "Added to Wishlist"
+                            : "Add to Wishlist"}
                         </Button>
                       </CardFooter>
                     </Card>
@@ -271,6 +353,5 @@ export default function DashboardPage() {
         </main>
       </div>
     </div>
-  )
+  );
 }
-

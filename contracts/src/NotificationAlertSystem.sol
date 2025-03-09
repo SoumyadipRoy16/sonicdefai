@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+
+pragma solidity ^0.8.20;
 
 /**
  * @title NotificationAlertSystem
@@ -42,6 +43,9 @@ contract NotificationAlertSystem {
     // Mapping of user address to array of notification indices
     mapping(address => uint256[]) public userNotifications;
     
+    // Array to keep track of all registered users
+    address[] private registeredUsers;
+    
     // Events
     event WishlistUpdated(address indexed user, string[] keywords);
     event TrendingWordsUpdated(string[] words);
@@ -76,7 +80,13 @@ contract NotificationAlertSystem {
         userWishlists[msg.sender].keywords = keywords;
         userWishlists[msg.sender].isActive = true;
         
+        // Add user to registered users array
+        registeredUsers.push(msg.sender);
+        
         emit WishlistUpdated(msg.sender, keywords);
+        
+        // Check for matches with current trending words upon registration
+        checkForMatches(msg.sender);
     }
     
     /**
@@ -126,23 +136,40 @@ contract NotificationAlertSystem {
         string[] memory userKeywords = userWishlists[user].keywords;
         
         for (uint256 i = 0; i < userKeywords.length; i++) {
-            if (isWordTrending[userKeywords[i]]) {
+            // Only create a notification if the word is trending AND
+            // we haven't already notified the user about this word
+            if (isWordTrending[userKeywords[i]] && !hasBeenNotifiedForWord(user, userKeywords[i])) {
                 createNotification(user, userKeywords[i], "Trending Match");
             }
         }
     }
     
+        /**
+     * @dev Helper function to check if a user has already been notified about a specific word
+     * @param user Address of the user
+     * @param word The word to check
+     * @return Whether the user has already been notified about this word
+     */
+    function hasBeenNotifiedForWord(address user, string memory word) internal view returns (bool) {
+        uint256[] memory userNotificationIds = userNotifications[user];
+        
+        for (uint256 i = 0; i < userNotificationIds.length; i++) {
+            Notification memory notification = notificationHistory[userNotificationIds[i]];
+            if (keccak256(bytes(notification.matchedWord)) == keccak256(bytes(word))) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
     /**
      * @dev Function to check all users for matches
      */
     function checkAllUsersForMatches() internal {
-        // In a production environment, this would need to be optimized
-        // or potentially moved to an off-chain solution for efficiency
-        // This is a simplified implementation for demonstration
-        
-        // Get all registered users and check for matches
-        // (This is a naive implementation that would be expensive with many users)
-        // In practice, you might use events and have a backend service monitor those
+        for (uint256 i = 0; i < registeredUsers.length; i++) {
+            checkForMatches(registeredUsers[i]);
+        }
     }
     
     /**
@@ -233,6 +260,17 @@ contract NotificationAlertSystem {
     function getTrendingWords() external view returns (string[] memory) {
         return trendingWords;
     }
+
+    /**
+     * @dev Function to get a user's wishlist details
+     * @param user Address of the user
+     * @return keywords Array of keywords
+     * @return isActive Whether the user is active
+     */
+    function getUserWishlist(address user) external view returns (string[] memory keywords, bool isActive) {
+        UserWishlist storage wishlist = userWishlists[user];
+        return (wishlist.keywords, wishlist.isActive);
+    }
     
     /**
      * @dev Function to check if a specific word is trending
@@ -241,6 +279,14 @@ contract NotificationAlertSystem {
      */
     function isWordCurrentlyTrending(string memory word) external view returns (bool) {
         return isWordTrending[word];
+    }
+    
+    /**
+     * @dev Function to get all registered users (for testing purposes)
+     * @return Array of user addresses
+     */
+    function getRegisteredUsers() external view returns (address[] memory) {
+        return registeredUsers;
     }
     
     /**

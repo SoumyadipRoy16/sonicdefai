@@ -7,10 +7,13 @@ evm_version = "paris"
 optimizer = true
 optimizer_runs = 200
 gas_reports = ["NotificationAlertSystem"]
+remappings = [
+    "forge-std/=lib/forge-std/src/"
+]
 
 # Sonic-specific configurations
 [profile.sonic]
-eth_rpc_url = "${SONIC_RPC_URL}"
+sonic_blaze = "https://rpc.blaze.soniclabs.com"
 chain_id = 57054
 
 # For testing
@@ -34,12 +37,3 @@ broadcast = "broadcast"
 [profile.ci]
 fuzz = { runs = 1000 }
 verbosity = 4
-
-# Remappings for dependencies
-[profile.default.remappings]
-"@openzeppelin/" = "lib/openzeppelin-contracts/"
-"forge-std/" = "lib/forge-std/src/"
-
-# For etherscan verification (if supported on Sonic)
-[etherscan]
-sonic = { key = "${SONIC_API_KEY}" }

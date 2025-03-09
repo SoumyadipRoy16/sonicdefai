@@ -11,7 +11,7 @@ gas_reports = ["NotificationAlertSystem"]
 # Sonic-specific configurations
 [profile.sonic]
 eth_rpc_url = "${SONIC_RPC_URL}"
-chain_id = 11888
+chain_id = 57054
 
 # For testing
 [profile.test]

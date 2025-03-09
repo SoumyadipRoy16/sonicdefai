@@ -1,0 +1,45 @@
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+solc = "0.8.20"
+evm_version = "paris"
+optimizer = true
+optimizer_runs = 200
+gas_reports = ["NotificationAlertSystem"]
+
+# Sonic-specific configurations
+[profile.sonic]
+eth_rpc_url = "${SONIC_RPC_URL}"
+chain_id = 11888
+
+# For testing
+[profile.test]
+src = "test"
+out = "out"
+libs = ["lib"]
+verbosity = 3
+gas_reports = ["*"]
+# Increase the fuzz test runs since we have complex notification logic
+fuzz = { runs = 500 }
+
+# For script runs (deployment)
+[profile.script]
+src = "script"
+out = "artifacts"
+libs = ["lib"]
+broadcast = "broadcast"
+
+# For CI/CD (with higher fuzzing runs)
+[profile.ci]
+fuzz = { runs = 1000 }
+verbosity = 4
+
+# Remappings for dependencies
+[profile.default.remappings]
+"@openzeppelin/" = "lib/openzeppelin-contracts/"
+"forge-std/" = "lib/forge-std/src/"
+
+# For etherscan verification (if supported on Sonic)
+[etherscan]
+sonic = { key = "${SONIC_API_KEY}" }

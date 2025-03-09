@@ -3,14 +3,41 @@ import os
 from analyze_tweets import extract_keywords
 
 # Fetch Twitter API credentials from environment variables
-API_KEY = os.getenv("API_KEY")
-API_SECRET_KEY = os.getenv("API_SECRET_KEY")
-ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")
-ACCESS_TOKEN_SECRET = os.getenv("ACCESS_TOKEN_SECRET")
+BEARER_TOKEN = os.getenv("BEARER_TOKEN")
 
 # Authenticate to Twitter
-auth = tweepy.OAuth1UserHandler(API_KEY, API_SECRET_KEY, ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
-api = tweepy.API(auth)
+client = tweepy.Client(bearer_token=BEARER_TOKEN)
+
+def fetch_user_account_info(username):
+    """
+    Fetches user account information using the Twitter API.
+    :param username: Twitter handle of the celebrity
+    :return: Dictionary containing user details and public metrics
+    """
+    try:
+        response = client.get_user(
+            username=username,
+            user_fields=["created_at", "description", "public_metrics", "profile_image_url", "verified"]
+        )
+        user = response.data
+
+        # Extract relevant fields
+        values = {
+            "user_id": user.id,
+            "username": user.username,
+            "name": user.name,
+            "created_at": user.created_at,
+            "description": user.description,
+            "avatar": user.profile_image_url,
+            "verified": user.verified
+        }
+        values.update(user.public_metrics)  # Add public metrics (e.g., followers_count, tweet_count)
+
+        return values
+
+    except tweepy.TweepyException as e:
+        print(f"Error fetching user account info: {e}")
+        return None
 
 def create_celebrity_data(username, tweets, keyword_counts):
     """
@@ -21,21 +48,19 @@ def create_celebrity_data(username, tweets, keyword_counts):
     :return: Dictionary representing the celebrity data
     """
     try:
-        # Fetch user details from the Twitter API
-        user = api.get_user(screen_name=username)
-        followers_count = user.followers_count
-        bio = user.description
-        avatar = user.profile_image_url_https
-        verified = user.verified
+        # Fetch user account info
+        user_info = fetch_user_account_info(username)
+        if not user_info:
+            return None
 
         # Structure the celebrity data
         celebrity = {
-            "name": user.name,
+            "name": user_info.get("name", ""),
             "username": username,
-            "followers": f"{followers_count / 1_000_000:.1f}M" if followers_count >= 1_000_000 else f"{followers_count}",
-            "bio": bio,
-            "avatar": avatar,
-            "verified": verified,
+            "followers": f"{user_info['followers_count'] / 1_000_000:.1f}M" if user_info['followers_count'] >= 1_000_000 else f"{user_info['followers_count']}",
+            "bio": user_info.get("description", ""),
+            "avatar": user_info.get("avatar", ""),
+            "verified": user_info.get("verified", False),
             "tweets": [],
             "trendingKeywords": []
         }
@@ -44,11 +69,11 @@ def create_celebrity_data(username, tweets, keyword_counts):
         for tweet in tweets:
             tweet_data = {
                 "id": tweet.id,
-                "content": tweet.full_text,
+                "content": tweet.text,
                 "date": tweet.created_at.strftime("%Y-%m-%d %H:%M:%S"),
-                "likes": tweet.favorite_count,
-                "retweets": tweet.retweet_count,
-                "keywords": extract_keywords(tweet.full_text)
+                "likes": tweet.public_metrics['like_count'],
+                "retweets": tweet.public_metrics['retweet_count'],
+                "keywords": extract_keywords(tweet.text)
             }
             celebrity["tweets"].append(tweet_data)
 
@@ -63,6 +88,6 @@ def create_celebrity_data(username, tweets, keyword_counts):
 
         return celebrity
 
-    except tweepy.TweepError as e:
-        print(f"Error fetching user details: {e}")
+    except Exception as e:
+        print(f"Error creating celebrity data: {e}")
         return None

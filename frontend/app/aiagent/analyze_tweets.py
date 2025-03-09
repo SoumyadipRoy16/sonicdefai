@@ -25,7 +25,7 @@ def analyze_tweets(tweets):
     """
     all_keywords = []
     for tweet in tweets:
-        keywords = extract_keywords(tweet.full_text)
+        keywords = extract_keywords(tweet.text)
         all_keywords.extend(keywords)
     keyword_counts = Counter(all_keywords)
     return keyword_counts

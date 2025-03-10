@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 MINIMUM_TWEETS = 10
 # Consider simplifying your query if it's causing timeouts
-QUERY = '(doge OR shiba OR floki OR pepe OR elon OR moon OR rocket OR hodl OR whale OR satoshi OR fomo OR ape) lang:en until:2025-03-10 since:2023-01-01'
+QUERY = '(doge OR shib OR floki OR pepe OR rocket OR moon)(from:justinsuntron) lang:en until:2025-03-10 since:2022-01-01'
 
 # Make client a global variable
 client = None
@@ -55,7 +55,7 @@ async def main():
         email = config['X']['email']
         password = config['X']['password']
 
-        with open('tweets.csv', 'w', newline='', encoding='utf-8') as file:
+        with open('tweets_js.csv', 'w', newline='', encoding='utf-8') as file:
             writer = csv.writer(file)
             writer.writerow(['Tweet_count', 'Username', 'Text', 'Created At', 'Retweets', 'Likes'])
 
@@ -86,7 +86,7 @@ async def main():
                     tweet_count += 1
                     tweet_data = [tweet_count, tweet.user.name, tweet.text, tweet.created_at, tweet.retweet_count, tweet.favorite_count]
                     
-                    with open('tweets.csv', 'a', newline='', encoding='utf-8') as file:
+                    with open('tweets_js.csv', 'a', newline='', encoding='utf-8') as file:
                         writer = csv.writer(file)
                         writer.writerow(tweet_data)
 

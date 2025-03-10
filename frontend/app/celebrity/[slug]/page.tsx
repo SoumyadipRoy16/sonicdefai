@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useWishlist } from "@/components/wishlist-provider"
 import { useToast } from "@/hooks/use-toast"
 
-export default function CelebrityPage({ params }: { params: { slug: string } }) {
+export default function CelebrityPage() {
   const { addItem, isInWishlist } = useWishlist()
   const { toast } = useToast()
   const [isFollowing, setIsFollowing] = useState(false)

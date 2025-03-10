@@ -7,6 +7,7 @@ from configparser import ConfigParser
 from random import randint
 import httpx
 import logging
+import os
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, 
@@ -16,13 +17,13 @@ logging.basicConfig(level=logging.INFO,
 logger = logging.getLogger(__name__)
 
 MINIMUM_TWEETS = 10
-# Consider simplifying your query if it's causing timeouts
-QUERY = '(doge OR shib OR floki OR pepe OR rocket OR moon)(from:justinsuntron) lang:en until:2025-03-10 since:2022-01-01'
+QUERY = '(doge OR shib OR floki OR pepe OR rocket OR moon)(from:{username}) lang:en until:2025-03-10 since:2022-01-01'
+CSV_FILE_PATH = 'tweets_{username}.csv'  # Dynamic CSV file path
 
 # Make client a global variable
 client = None
 
-async def get_tweets(tweets, max_retries=3):
+async def get_tweets(client, tweets, max_retries=3):
     retries = 0
     while retries < max_retries:
         try:
@@ -44,18 +45,22 @@ async def get_tweets(tweets, max_retries=3):
     logger.error(f"Failed after {max_retries} retries")
     return None
 
-async def main():
-    global client
+async def fetch_tweets_for_user(username):
+    global QUERY, CSV_FILE_PATH, client
+    
+    # Update QUERY and CSV_FILE_PATH with the provided username
+    QUERY = QUERY.format(username=username)
+    CSV_FILE_PATH = CSV_FILE_PATH.format(username=username)
     
     try:
         # login credentials
         config = ConfigParser()
         config.read('config.ini')
-        username = config['X']['username']
+        username_config = config['X']['username']
         email = config['X']['email']
         password = config['X']['password']
 
-        with open('tweets_js.csv', 'w', newline='', encoding='utf-8') as file:
+        with open(CSV_FILE_PATH, 'w', newline='', encoding='utf-8') as file:
             writer = csv.writer(file)
             writer.writerow(['Tweet_count', 'Username', 'Text', 'Created At', 'Retweets', 'Likes'])
 
@@ -68,7 +73,7 @@ async def main():
             client.load_cookies('cookies.json')
         except Exception as e:
             logger.warning(f"Failed to load cookies: {e}. Attempting login...")
-            await client.login(auth_info_1=username, auth_info_2=email, password=password)
+            await client.login(auth_info_1=username_config, auth_info_2=email, password=password)
             client.save_cookies('cookies.json')
 
         tweet_count = 0
@@ -76,7 +81,7 @@ async def main():
 
         while tweet_count < MINIMUM_TWEETS:
             try:
-                tweets = await get_tweets(tweets)
+                tweets = await get_tweets(client, tweets)
                 
                 if not tweets:
                     logger.info("No more tweets found")
@@ -86,7 +91,7 @@ async def main():
                     tweet_count += 1
                     tweet_data = [tweet_count, tweet.user.name, tweet.text, tweet.created_at, tweet.retweet_count, tweet.favorite_count]
                     
-                    with open('tweets_js.csv', 'a', newline='', encoding='utf-8') as file:
+                    with open(CSV_FILE_PATH, 'a', newline='', encoding='utf-8') as file:
                         writer = csv.writer(file)
                         writer.writerow(tweet_data)
 
@@ -104,10 +109,8 @@ async def main():
                 continue
 
         logger.info(f"Done! Got {tweet_count} tweets")
+        return CSV_FILE_PATH
         
     except Exception as e:
         logger.error(f"Fatal error: {e}")
         raise
-
-if __name__ == "__main__":
-    asyncio.run(main())

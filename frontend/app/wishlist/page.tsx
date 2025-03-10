@@ -2,15 +2,8 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import {
-  Bell,
-  ChevronDown,
-  Filter,
-  Search,
-  Star,
-  Trash2,
-  Zap,
-} from "lucide-react";
+import Navbar from "@/components/dashboard/Navbar";
+import { Bell, ChevronDown, Filter, Star, Trash2, Zap } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -21,7 +14,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -95,55 +87,7 @@ export default function WishlistPage() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Zap className="h-6 w-6 text-primary" />
-            <Link href="/" className="text-xl font-bold">
-              CryptoTrendAI
-            </Link>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="relative w-full max-w-sm">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search wishlist..."
-                className="w-full bg-background pl-8 md:w-[300px] lg:w-[400px]"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-            <Button variant="outline" size="icon" className="relative">
-              <Bell className="h-4 w-4" />
-              <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground">
-                3
-              </span>
-            </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="relative h-8 w-8 rounded-full"
-                >
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage
-                      src="/placeholder.svg?height=32&width=32"
-                      alt="User"
-                    />
-                    <AvatarFallback>U</AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuItem>Settings</DropdownMenuItem>
-                <DropdownMenuItem>Logout</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </div>
-      </header>
+      <Navbar />
       <div className="flex flex-1">
         <aside className="hidden w-[250px] flex-col border-r bg-muted/40 md:flex">
           <div className="flex h-14 items-center border-b px-4">

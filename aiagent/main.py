@@ -16,7 +16,7 @@ logging.basicConfig(level=logging.INFO,
                               logging.StreamHandler()])
 logger = logging.getLogger(__name__)
 
-MINIMUM_TWEETS = 10
+MINIMUM_TWEETS = 20
 QUERY = '(doge OR shib OR floki OR pepe OR rocket OR moon)(from:{username}) lang:en until:2025-03-10 since:2022-01-01'
 CSV_FILE_PATH = 'tweets_{username}.csv'  # Dynamic CSV file path
 
